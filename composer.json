@@ -1,0 +1,10 @@
+{
+    "name": "terminus-plugin-project/terminus-upstream-testing",
+    "authors": [
+        {
+            "name": "Sean Dietrich",
+            "email": "sean.dietrich@inresonance.com"
+        }
+    ],
+    "require": {}
+}
