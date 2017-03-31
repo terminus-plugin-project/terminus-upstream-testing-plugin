@@ -1,6 +1,6 @@
 {
     "name": "terminus-plugin-project/terminus-upstream-testing-plugin",
-    "description": "",
+    "description": "Pantheon plugin to deploy upstream branch / features to specified branches before committing to master environment.",
     "homepage": "https://github.com/terminus-plugin-project/terminus-upstream-testing-plugin",
     "license": "MIT",
     "type": "terminus-plugin",
