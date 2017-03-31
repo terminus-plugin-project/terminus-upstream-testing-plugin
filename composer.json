@@ -1,10 +1,38 @@
 {
-    "name": "terminus-plugin-project/terminus-upstream-testing",
+    "name": "terminus-plugin-project/terminus-upstream-testing-plugin",
+    "description": "",
+    "homepage": "https://github.com/terminus-plugin-project/terminus-upstream-testing-plugin",
+    "license": "MIT",
+    "type": "terminus-plugin",
     "authors": [
         {
             "name": "Sean Dietrich",
-            "email": "sean.dietrich@inresonance.com"
+            "email": "sean.dietrich@inresonance.com",
+            "homepage": "https://github.com/sean-e-dietrich",
+            "role": "Developer"
         }
     ],
-    "require": {}
+    "keywords": [
+        "pantheon",
+        "terminus",
+        "upstream",
+        "plugin",
+        "testing",
+        "deployment"
+    ],
+    "require": {
+        "php": ">=5.4",
+        "maknz/slack": "^1.7"
+    },
+    "support": {
+        "issues": "https://github.com/terminus-plugin-project/terminus-upstream-testing-plugin/issues"
+    },
+    "autoload": {
+        "psr-4": { "Pantheon\\TerminusUpstreamDev\\": "src" }
+    },
+    "extra": {
+        "terminus": {
+            "compatible-version": "^1"
+        }
+    }
 }
