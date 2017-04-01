@@ -73,7 +73,7 @@ $ terminus site:upstream:test companysite-33 --username="admin"
 
 #### Reset Password
 ```
-$ terminus site:upstream:test companysite-33 --username="admin"
+$ terminus site:upstream:test companysite-33 --password="admin"
 ```
 
 ### Slack Notification
