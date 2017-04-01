@@ -101,5 +101,20 @@ Occasionally you may get this issue:
 The way to solve this will be to go to your terminus project and run `composer update`. If you globally require it you
 will need to go directly into terminus it's self as the lock file within the terminus may contain an older version of guzzle/psr7.
 
+### OS X & Linux Fix
+
+The following will only work assuming the following:
+
+* terminus was installed with composer and not with the phar
+* the terminus executable file is located within vendor/bin folder
+
+```
+cd `dirname $(which terminus)`
+cd ../../
+composer update
+cd ~/.terminus/plugins/terminus-plugin-project
+composer update
+```
+
 ## Help
 Run `terminus list site:upstream:test` for a complete list of available commands. Use `terminus help <command>` to get help on one command.
