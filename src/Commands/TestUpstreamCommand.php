@@ -128,7 +128,8 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
             /** @var \Pantheon\Terminus\Models\Environment $copy_env */
             $copy_env = $this->site->getEnvironments()->get($copy);
             $workflow = $this->site->getEnvironments()->create($env, $copy_env);
-            while (!$workflow->checkProgress()) {}
+            while (!$workflow->checkProgress()) {
+            }
             $this->log()->notice($workflow->getMessage());
             $this->site->unsetEnvironments();
         }
