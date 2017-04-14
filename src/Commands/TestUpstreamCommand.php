@@ -134,8 +134,26 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
             $this->site->unsetEnvironments();
         }
 
-        $site_git = $this->site->getEnvironments()->get('dev')->gitConnectionInfo()['url'];
+        $current_env = $this->site->getEnvironments()->get($env);
+        if ($current_env->get('connection_mode') !== 'git') {
+          $change_count = count((array)$current_env->diffstat());
+          if ($change_count > 0) {
+            $this->log()->notice('{site}: Code uncommitted. Committing now.', ['site' => $this->site->get('name')]);
+            $workflow = $current_env->commitChanges($options['message']);
+            while (!$workflow->checkProgress()) {}
+          }
 
+          $this->log()->notice('{site}: Changing connection mode to git', ['site' => $this->site->get('name')]);
+          $workflow = $current_env->changeConnectionMode('git');
+          if (is_string($workflow)) {
+            $this->log()->notice($workflow);
+          } else {
+            while (!$workflow->checkProgress()) {}
+            $this->log()->notice($workflow->getMessage());
+          }
+        }
+
+        $site_git = $this->site->getEnvironments()->get('dev')->gitConnectionInfo()['url'];
         $git_location = '/tmp/' . $site_id;
         $this->passthru("rm -rf {$git_location}");
         $this->log()->notice('Cloning Repository');
