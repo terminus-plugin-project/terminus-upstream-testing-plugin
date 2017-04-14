@@ -87,7 +87,7 @@ $ terminus site:upstream.test companysite-33 --slack-url="[REDACTED]" --slack-ch
 For help installing, see [Manage Plugins](https://pantheon.io/docs/terminus/plugins/)
 ```
 mkdir -p ~/.terminus/plugins
-composer create-project -d ~/.terminus/plugins terminus-plugin-project/terminus-upstream-testing:~1
+composer create-project -d ~/.terminus/plugins terminus-plugin-project/terminus-upstream-testing-plugin:~1
 ```
 
 ## Install Notes
