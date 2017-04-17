@@ -87,7 +87,8 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
             throw new TerminusException('Provided environment must not be dev, test, or live');
         }
 
-        if ((count($this->site->getEnvironments()->multidev()) >= $settings->max_num_cdes) && (!$this->site->getEnvironments()->get($env)->isInitialized())) {
+        $multi_devs = $this->site->getEnvironments()->multidev();
+        if ((count($multi_devs) >= $settings->max_num_cdes) && !in_array($env, array_keys($multi_devs))) {
             throw new TerminusException('Max Number of Multi-Devs and {env} is not initialized', ['env' => $env]);
         }
 
