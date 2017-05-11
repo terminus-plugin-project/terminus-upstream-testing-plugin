@@ -75,7 +75,8 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
 
         if (is_null($repo)) {
             $upstream_data = $this->site->getUpstream();
-            $repo = $upstream_data->get('url');
+            $repo_info = $this->session()->getUser()->getUpstreams()->get($upstream_data->get('id'));
+            $repo = $repo_info->get('upstream');
         }
 
         $this->log()->notice('Repository being used: {repo}', ['repo' => $repo]);
