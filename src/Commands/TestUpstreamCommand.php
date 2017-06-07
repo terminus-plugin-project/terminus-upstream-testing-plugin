@@ -42,6 +42,7 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
    * @option string $slack_username Slack User to post as (optional)
    * @option string $slack_icon Slack Icon to user for user (optional)
    * @option string $notify Execute specific script for notification (optional)
+   * @option boolean $skipautocommit Skip autocommit any files currently uncommitted in SFTP (optional)
    *
    * @usage terminus site:upstream:test <site_id>
    * @usage terminus site:upstream:test <site_id> --env="<env>"
@@ -51,7 +52,7 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
    */
     public function testUpdate($site_id, $options = [
     'repo' => null,
-    'env' => 'upstream',
+    'env' => null,
     'copy' => null,
     'teardown' => false,
     'branch' => 'master',
@@ -64,7 +65,8 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
     'slack_channel' => null,
     'slack_username' => 'Pantheon',
     'slack_icon' => ':computer:',
-    'notify' => null
+    'notify' => null,
+    'skipautocommit' => false
     ])
     {
         $this->site = $this->sites->get($site_id);
@@ -84,11 +86,14 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
 
         $this->log()->notice('Repository being used: {repo}', ['repo' => $repo]);
 
+        if(is_null($options['env'])){
+          $options['env'] = $options['branch'];
+        }
         $env = strtolower($options['env']);
         $env = preg_replace("/[^A-Za-z0-9\-]/", "", $env);
         $env = substr($env, 0, 11);
-        if (in_array($env, ['dev', 'test', 'live'])) {
-            throw new TerminusException('Provided environment must not be dev, test, or live');
+        if (in_array($env, ['dev', 'test', 'live', 'master'])) {
+            throw new TerminusException('Provided environment must not be master, dev, test, or live');
         }
 
         $multi_devs = $this->site->getEnvironments()->multidev();
@@ -142,7 +147,7 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
         $current_env = $this->site->getEnvironments()->get($env);
         if ($current_env->get('connection_mode') !== 'git') {
           $change_count = count((array)$current_env->diffstat());
-          if ($change_count > 0) {
+          if ($change_count > 0 && !$options['skipautocommit']) {
             $this->log()->notice('{site}: Code uncommitted. Committing now.', ['site' => $this->site->get('name')]);
             $workflow = $current_env->commitChanges($options['message']);
             while (!$workflow->checkProgress()) {}
@@ -236,10 +241,11 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
         }
 
         if(!is_null($options['notify'])){
+          $options['notify'] = $this->message($options['notify'], ['env' => $env, 'site_id' => $site_id, 'site_name' => $site_name, 'url' => $url]);
           $this->passthru($options['notify']);       
         }
 
-        $this->log()->notice('{site}: Upstream Test Push Completed', ['site' => $site_name]);
+        $this->log()->notice('{site}: Upstream Test Push to {env} Completed', ['site' => $site_name, 'env' => $env]);
     }
 
   /**
