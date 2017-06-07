@@ -41,11 +41,13 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
    * @option string $slack_message Slack Message to post (optional) (Default: #general)
    * @option string $slack_username Slack User to post as (optional)
    * @option string $slack_icon Slack Icon to user for user (optional)
+   * @option string $notify Execute specific script for notification (optional)
    *
    * @usage terminus site:upstream:test <site_id>
    * @usage terminus site:upstream:test <site_id> --env="<env>"
    * @usage terminus site:upstream:test <site_id> --slack_url="<url>" --slack_channel="<channel>"
    * @usage terminus site:upstream:test <site_id> --repo="<url>" --branch="<branch>"
+   * @usage terminus site:upstream:test <site_id> --env="<env>" --notify="<notify>"
    */
     public function testUpdate($site_id, $options = [
     'repo' => null,
@@ -61,7 +63,8 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
     'slack_url' => null,
     'slack_channel' => null,
     'slack_username' => 'Pantheon',
-    'slack_icon' => ':computer:'
+    'slack_icon' => ':computer:',
+    'notify' => null
     ])
     {
         $this->site = $this->sites->get($site_id);
@@ -230,6 +233,10 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
             $message = $this->message($message, ['env' => $env, 'site_id' => $site_id, 'site_name' => $site_name, 'url' => $url]);
             $client->send($message);
             $this->log()->notice('Message sent to slack channel: {url}: {channel}', ['url' => $options['slack_url'], 'channel' => $options['slack_channel']]);
+        }
+
+        if(!is_null($options['notify'])){
+          $this->passthru($options['notify']);       
         }
 
         $this->log()->notice('{site}: Upstream Test Push Completed', ['site' => $site_name]);
