@@ -13,6 +13,7 @@
 | --username            | Change user 1's username |
 | --password            | Change user 1's password |
 | --notify              | Run a script after the process has been completed |
+| --skipautocommit      | Skip files that were not autocommitted |
 
 ## Slack Integration
 
