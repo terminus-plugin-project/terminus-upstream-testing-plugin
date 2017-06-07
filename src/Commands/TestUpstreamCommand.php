@@ -52,7 +52,7 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
    */
     public function testUpdate($site_id, $options = [
     'repo' => null,
-    'env' => 'upstream',
+    'env' => null,
     'copy' => null,
     'teardown' => false,
     'branch' => 'master',
@@ -86,11 +86,14 @@ class TestUpstreamCommand extends TerminusCommand implements SiteAwareInterface
 
         $this->log()->notice('Repository being used: {repo}', ['repo' => $repo]);
 
+        if(is_null($options['env'])){
+          $options['env'] = $options['branch'];
+        }
         $env = strtolower($options['env']);
         $env = preg_replace("/[^A-Za-z0-9\-]/", "", $env);
         $env = substr($env, 0, 11);
-        if (in_array($env, ['dev', 'test', 'live'])) {
-            throw new TerminusException('Provided environment must not be dev, test, or live');
+        if (in_array($env, ['dev', 'test', 'live', 'master'])) {
+            throw new TerminusException('Provided environment must not be master, dev, test, or live');
         }
 
         $multi_devs = $this->site->getEnvironments()->multidev();
